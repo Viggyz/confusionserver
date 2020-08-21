@@ -58,6 +58,6 @@ const dishSchema = new Schema({
     timestamps: true
 });
 
-var Dishes = mongoose.model('Dish', dishSchema);
+var Dishes = mongoose.model('Dish', dishSchema); //Why is it a var?
 
 module.exports = Dishes;
