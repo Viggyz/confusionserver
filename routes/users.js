@@ -79,9 +79,7 @@ router.post("/login", cors.corsWithOptions, (req, res, next) => {
     //       status: "Login Unsuccessful!",
     //       err: "Could not log in user!",
     //     });
-    // }
-    console.log(user);
-    // console.log(req.user);
+    //   }
     var token = authenticate.getToken({ _id: user._id });
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
@@ -90,17 +88,17 @@ router.post("/login", cors.corsWithOptions, (req, res, next) => {
   })(req, res, next);
 });
 
-router.get("/logout", (req, res, next) => {
-  if (req.session) {
-    req.session.destroy();
-    res.clearCookie("session-id");
-    res.redirect("/");
-  } else {
-    var err = new Error("You are not logged in!");
-    err.status = 403;
-    next(err);
-  }
-});
+// router.get("/logout", (req, res, next) => {
+//   if (req.session) {
+//     req.session.destroy();
+//     res.clearCookie("session-id");
+//     res.redirect("/");
+//   } else {
+//     var err = new Error("You are not logged in!");
+//     err.status = 403;
+//     next(err);
+//   }
+// });
 
 router.get("/checkJWTToken", cors.corsWithOptions, (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {

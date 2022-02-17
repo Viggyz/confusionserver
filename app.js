@@ -26,18 +26,28 @@ const mongoose = require("mongoose");
 
 const Dishes = require("./models/dishes");
 
-const url = config.mongoUrl;
+const url = process.env.MONGO_URL || config.mongoUrl;
 const connect = mongoose.connect(url); // connecting to db
 
-connect.then(
-  (db) => {
-    console.log("Connected correctly to db");
-  },
-  (err) => {
-    // console.log(err);
-    throw new Error("Unable to connect to server");
+const start = async () => {
+  try {
+    await connect
+      .then(
+        (db) => {
+          console.log("Connected correctly to db");
+        },
+        (err) => {
+          console.log(err);
+          process.exit(1);
+          // throw new Error("Unable to connect to server");
+        }
+      )
+      .catch((err) => console.log("Unable to Connect to db"));
+  } catch (err) {
+    throw new Error(err);
+    process.exit(1);
   }
-);
+};
 
 var app = express();
 
@@ -94,3 +104,5 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+
+start();
