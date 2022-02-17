@@ -5,6 +5,7 @@ var User = require("../models/user");
 //var authenticate = require('../authenticate');
 const authenticate = require("../authenticate");
 const cors = require("./cors");
+const config = require("../config");
 
 var router = express.Router();
 router.use(bodyParser.json());
@@ -64,26 +65,21 @@ router.post("/signup", cors.corsWithOptions, (req, res, next) => {
 
 router.post("/login", cors.corsWithOptions, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    if (err) return next();
+    if (err) return next(err);
     if (!user) {
       res.statusCode = 401;
       res.setHeader("Content-Type", "application/json");
       res.json({ success: false, status: "Login Unsuccessful!", err: info });
     }
-    // req.logIn(user, (err) => {
-    //   if (err) {
-    //     res.statusCode = 401;
-    //     res.setHeader("Content-Type", "application/json");
-    //     res.json({
-    //       success: false,
-    //       status: "Login Unsuccessful!",
-    //       err: "Could not log in user!",
-    //     });
-    //   }
-    var token = authenticate.getToken({ _id: user._id });
+    const tokenData = authenticate.getToken({ _id: user._id });
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    res.json({ success: true, status: "Login Successful!", token: token });
+    res.json({
+      success: true,
+      status: "Login Successful!",
+      token: tokenData.token,
+      expiresAt: tokenData.expiresIn,
+    });
     // });
   })(req, res, next);
 });
