@@ -31,7 +31,7 @@ const connect = mongoose.connect(url); // connecting to db
 
 connect.then(
   (db) => {
-    console.log("Connected correctly to server");
+    console.log("Connected correctly to db");
   },
   (err) => {
     // console.log(err);
@@ -54,8 +54,8 @@ app.all("*", (req, res, next) => {
 
 // view engine setup
 /* May be necessary */
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "jade");
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
 
 //Bunch'a middleware
 app.use(logger("dev"));
