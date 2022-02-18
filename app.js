@@ -9,6 +9,7 @@ var passport = require("passport");
 var authenticate = require("./authenticate");
 var config = require("./config");
 
+const data = require("./adddata");
 //Mongo services is turned off,turn on in services.msc in run
 
 //Router connections of express api
@@ -47,6 +48,7 @@ const start = async () => {
     throw new Error(err);
     process.exit(1);
   }
+  data.addData();
 };
 
 var app = express();

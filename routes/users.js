@@ -52,11 +52,34 @@ router.post("/signup", cors.corsWithOptions, (req, res, next) => {
             res.json({ err: err });
             return;
           }
-          passport.authenticate("local")(req, res, () => {
-            res.statusCode = 200;
+          passport.authenticate("local", (err, user, info) => {
+            if (err) return next(err);
+            if (!user) {
+              res.statusCode = 400;
+              res.setHeader("Content-Type", "application/json");
+              res.json({
+                success: false,
+                status: "Registration Unsuccessful!",
+                err: info,
+              });
+            }
+            const tokenData = authenticate.getToken({ _id: user._id });
+            res.statusCode = 201;
             res.setHeader("Content-Type", "application/json");
-            res.json({ success: true, status: "Registration Successful!" });
-          });
+            res.json({
+              success: true,
+              status: "Registration Successful!",
+              token: tokenData.token,
+              user: {
+                id: user._id,
+                username: user.username,
+                admin: user.admin,
+                fname: user.firstname,
+                lname: user.lastname,
+              },
+              expiresAt: tokenData.expiresIn,
+            });
+          })(req, res, next);
         });
       }
     }
@@ -78,6 +101,13 @@ router.post("/login", cors.corsWithOptions, (req, res, next) => {
       success: true,
       status: "Login Successful!",
       token: tokenData.token,
+      user: {
+        id: user._id,
+        username: user.username,
+        admin: user.admin,
+        fname: user.firstname,
+        lname: user.lastname,
+      },
       expiresAt: tokenData.expiresIn,
     });
     // });
